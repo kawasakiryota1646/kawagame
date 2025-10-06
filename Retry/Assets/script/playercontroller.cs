@@ -4,16 +4,22 @@ using System.Collections;
 
 public class PlayerController : MonoBehaviour
 {
-    public float moveSpeed = 5f;    // ˆÚ“®‘¬“x
-    public float jumpForce = 7f;    // ƒWƒƒƒ“ƒv—Í
+    [Header("ç§»å‹•è¨­å®š")]
+    public float moveSpeed = 5f;
+    public float jumpForce = 7f;
+
+    [Header("ã‚¸ãƒ£ãƒ³ãƒ—èª¿æ•´")]
+    [SerializeField] private float fallMultiplier = 2.5f;
+    [SerializeField] private float lowJumpMultiplier = 2f;
+
+    [Header("ã‚²ãƒ¼ãƒ ã‚ªãƒ¼ãƒãƒ¼è¨­å®š")]
+    public float fallLimit = -10f;
+    [SerializeField] private GameObject GameOverUI;
+    [SerializeField] private float delayTime = 3f;
 
     private Rigidbody2D rb;
-    private bool isGrounded = false; // ’n–Ê‚É‚¢‚é‚©‚Ç‚¤‚©
-    public float fallLimit = -10f; // ‚±‚Ì‚‚³‚æ‚è‰º‚É—‚¿‚½‚çƒQ[ƒ€ƒI[ƒo[
-    [SerializeField] private GameObject GameOverUI;  // ƒS[ƒ‹UI‚ğInspector‚Åw’è
-    [SerializeField] private float delayTime = 3f; // ƒV[ƒ“ˆÚs‚Ü‚Å‚Ì‘Ò‹@ŠÔ
-
-
+    private bool isGrounded = false;
+    private bool isDead = false; // â† ã“ã‚Œè¿½åŠ ï¼
 
     void Start()
     {
@@ -22,28 +28,47 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        // ‰¡ˆÚ“®
-        float moveX = Input.GetAxis("Horizontal"); // A/DƒL[ or –îˆóƒL[
+        // æ­»äº¡ä¸­ã¯æ“ä½œä¸èƒ½ã«ã™ã‚‹
+        if (isDead) return;
+
+        // æ¨ªç§»å‹•
+        float moveX = Input.GetAxis("Horizontal");
         rb.linearVelocity = new Vector2(moveX * moveSpeed, rb.linearVelocity.y);
 
-        // ƒWƒƒƒ“ƒv
+        // ã‚¸ãƒ£ãƒ³ãƒ—
         if (Input.GetButtonDown("Jump") && isGrounded)
         {
-            rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
         }
 
+        // è½ä¸‹è£œæ­£ï¼ˆãƒãƒªã‚ªé¢¨ï¼‰
+        if (rb.linearVelocity.y < 0)
+        {
+            rb.linearVelocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1) * Time.deltaTime;
+        }
+        else if (rb.linearVelocity.y > 0 && !Input.GetButton("Jump"))
+        {
+            rb.linearVelocity += Vector2.up * Physics2D.gravity.y * (lowJumpMultiplier - 1) * Time.deltaTime;
+        }
+
+        // è½ä¸‹æ­»
         if (transform.position.y < fallLimit)
         {
             StartCoroutine(Gameover());
         }
     }
 
-    // ’n–Ê‚ÉG‚ê‚½‚çƒWƒƒƒ“ƒv‰Â”\‚É
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Ground"))
         {
             isGrounded = true;
+        }
+
+        // æ•µã«å½“ãŸã£ãŸã‚‰æ­»ã¬
+        if (collision.gameObject.CompareTag("Enemy"))
+        {
+            StartCoroutine(Gameover());
         }
     }
 
@@ -55,20 +80,24 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-
     IEnumerator Gameover()
     {
-        // ƒS[ƒ‹UI‚ğ•\¦
+        if (isDead) yield break; // â† äºŒé‡å®Ÿè¡Œé˜²æ­¢
+        isDead = true;
+
+        // ã‚´ãƒ¼ãƒ«UIã‚’è¡¨ç¤º
         if (GameOverUI != null)
             GameOverUI.SetActive(true);
 
-        Debug.Log("Goal Reached!");
+        Debug.Log("Game Over!");
 
-        // ”•b‘Ò‹@
+        // å‹•ãã‚’æ­¢ã‚ã‚‹
+        rb.linearVelocity = Vector2.zero;
+        rb.bodyType = RigidbodyType2D.Kinematic; // â† ç‰©ç†æŒ™å‹•ã‚‚åœæ­¢
+
         yield return new WaitForSeconds(delayTime);
 
-        // ƒV[ƒ“‚ğƒŠƒ[ƒh‚µ‚ÄƒŠƒXƒ^[ƒg
+        // ã‚·ãƒ¼ãƒ³ã‚’ãƒªãƒ­ãƒ¼ãƒ‰
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
-
 }
