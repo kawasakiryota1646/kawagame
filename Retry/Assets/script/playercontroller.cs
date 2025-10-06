@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
 public class PlayerController : MonoBehaviour
 {
@@ -9,6 +10,11 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D rb;
     private bool isGrounded = false; // 地面にいるかどうか
     public float fallLimit = -10f; // この高さより下に落ちたらゲームオーバー
+    [SerializeField] private GameObject GameOverUI;  // ゴールUIをInspectorで指定
+    [SerializeField] private float delayTime = 3f; // シーン移行までの待機時間
+
+
+
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -28,7 +34,7 @@ public class PlayerController : MonoBehaviour
 
         if (transform.position.y < fallLimit)
         {
-            GameOver();
+            StartCoroutine(Gameover());
         }
     }
 
@@ -48,9 +54,21 @@ public class PlayerController : MonoBehaviour
             isGrounded = false;
         }
     }
-    void GameOver()
+
+
+    IEnumerator Gameover()
     {
+        // ゴールUIを表示
+        if (GameOverUI != null)
+            GameOverUI.SetActive(true);
+
+        Debug.Log("Goal Reached!");
+
+        // 数秒待機
+        yield return new WaitForSeconds(delayTime);
+
         // シーンをリロードしてリスタート
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
+
 }
