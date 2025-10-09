@@ -22,8 +22,8 @@ public class EnemyController : MonoBehaviour
             rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
         }
 
-    }
 
+    }
     // 地面に触れたらジャンプ可能に
     private void OnCollisionEnter2D(Collision2D collision)
     {

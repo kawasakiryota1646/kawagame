@@ -14,6 +14,8 @@ public class PlayerController : MonoBehaviour
 
     [Header("ゲームオーバー設定")]
     public float fallLimit = -10f;
+    public float fallLimitup = 8f;
+
     [SerializeField] private GameObject GameOverUI;
     [SerializeField] private float delayTime = 3f;
 
@@ -56,6 +58,12 @@ public class PlayerController : MonoBehaviour
         {
             StartCoroutine(Gameover());
         }
+
+        if (transform.position.y > fallLimitup)
+        {
+            StartCoroutine(Gameover());
+        }
+
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
