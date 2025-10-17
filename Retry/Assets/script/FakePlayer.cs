@@ -28,18 +28,25 @@ public class FakePlayer : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         StartCoroutine(RandomBehavior());
 
-        // ✅ シーン上から GameOverUI を自動で探す
+        // 🔽 自動でシーン上のUIを探す
         if (GameOverUI == null)
         {
             GameOverUI = GameObject.Find("GameOverUI");
+            if (GameOverUI == null)
+            {
+                // Canvas内からも探す
+                Canvas canvas = FindObjectOfType<Canvas>();
+                if (canvas != null)
+                {
+                    Transform found = canvas.transform.Find("GameOverUI");
+                    if (found != null) GameOverUI = found.gameObject;
+                }
+            }
         }
     }
 
     private void Update()
     {
-        if (isDead) return;
-
-        // 落下で死亡
         if (transform.position.y < fallLimit || transform.position.y > fallLimitup)
         {
             StartCoroutine(Gameover());
@@ -48,7 +55,7 @@ public class FakePlayer : MonoBehaviour
 
     IEnumerator RandomBehavior()
     {
-        while (!isDead)
+        while (true)
         {
             float dir = Random.value > 0.5f ? 1f : -1f;
             rb.linearVelocity = new Vector2(dir * moveSpeed, rb.linearVelocity.y);
@@ -62,9 +69,7 @@ public class FakePlayer : MonoBehaviour
             }
 
             if (isGrounded && Random.value > 0.3f)
-            {
                 rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
-            }
 
             yield return new WaitForSeconds(jumpInterval);
         }
@@ -76,9 +81,7 @@ public class FakePlayer : MonoBehaviour
             isGrounded = true;
 
         if (collision.gameObject.CompareTag("Enemy"))
-        {
             StartCoroutine(Gameover());
-        }
     }
 
     private void OnCollisionExit2D(Collision2D collision)
@@ -92,11 +95,17 @@ public class FakePlayer : MonoBehaviour
         if (isDead) yield break;
         isDead = true;
 
-        // ✅ シーン上の UI が存在すれば表示
+        Debug.Log($"{gameObject.name} が死亡！");
+
         if (GameOverUI != null)
+        {
+            Debug.Log("GameOverUIを表示します");
             GameOverUI.SetActive(true);
+        }
         else
-            Debug.LogWarning("GameOverUI が見つかりません。シーンに GameOverUI オブジェクトを配置してください。");
+        {
+            Debug.LogWarning("GameOverUIが見つかりません！");
+        }
 
         rb.linearVelocity = Vector2.zero;
         rb.bodyType = RigidbodyType2D.Kinematic;

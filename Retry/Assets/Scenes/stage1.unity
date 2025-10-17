@@ -2893,7 +2893,7 @@ GameObject:
   - component: {fileID: 1102660554}
   - component: {fileID: 1102660553}
   m_Layer: 0
-  m_Name: TitleEscape
+  m_Name: stageselect
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2911,8 +2911,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c7ba67f110d9fdc46a4721b4ec9f823c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  titleSceneName: Title
-  confirmUI: {fileID: 1096798304}
+  titleSceneName: stageselect
 --- !u!4 &1102660554
 Transform:
   m_ObjectHideFlags: 0
@@ -3329,7 +3328,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   titleSceneName: Title
-  confirmUI: {fileID: 1096798304}
 --- !u!1 &1339900446
 GameObject:
   m_ObjectHideFlags: 0
@@ -3860,7 +3858,7 @@ MonoBehaviour:
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
-        m_CallState: 1
+        m_CallState: 2
 --- !u!114 &1503500834
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4147,7 +4145,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 218, y: 153}
+  m_AnchoredPosition: {x: 301, y: 202}
   m_SizeDelta: {x: 254.83, y: 69.61}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1619489422
@@ -5491,7 +5489,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6169722793380300924, guid: 4f2d19207ee3d0f49a60133bfe7f3feb, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -4.2627125
+      value: -4.21
       objectReference: {fileID: 0}
     - target: {fileID: 6169722793380300924, guid: 4f2d19207ee3d0f49a60133bfe7f3feb, type: 3}
       propertyPath: m_LocalPosition.z

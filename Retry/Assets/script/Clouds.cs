@@ -34,6 +34,7 @@ public class CloudTrap_UnderTrigger : MonoBehaviour
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (player == null) return;
 
+
         Vector2 playerPos = player.transform.position;
         Vector2 cloudPos = transform.position;
 
@@ -56,7 +57,7 @@ public class CloudTrap_UnderTrigger : MonoBehaviour
 
     void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Ground") || collision.gameObject.CompareTag("Player"))
+        if (collision.gameObject.CompareTag("Ground") || collision.gameObject.CompareTag("Player") || collision.gameObject.CompareTag("PlayerFake"))
         {
             // 一定時間後に消えて、リスポーン処理を開始
             StartCoroutine(DisappearThenRespawn());
