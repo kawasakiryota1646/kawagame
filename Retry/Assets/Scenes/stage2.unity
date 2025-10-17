@@ -256,7 +256,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fakePlayerPrefab: {fileID: 472978184}
-  cloneCount: 1
+  cloneCount: 2
   spawnRadius: 1.5
   spawnSound: {fileID: 0}
   cloneLifetime: 100
