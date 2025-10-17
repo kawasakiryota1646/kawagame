@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using System.Collections;
 
 public class PlayerController : MonoBehaviour
@@ -19,31 +20,45 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private GameObject GameOverUI;
     [SerializeField] private float delayTime = 3f;
 
+    [Header("UI設定（任意）")]
+    [SerializeField] private Text deathCountText; // 死亡回数を表示するText
+
     private Rigidbody2D rb;
     private bool isGrounded = false;
-    private bool isDead = false; // ← これ追加！
+    private bool isDead = false;
+
+    private int deathCount; // 死亡回数
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+
+        // 保存されている死亡回数を読み込む
+        deathCount = PlayerPrefs.GetInt("DeathCount", 0);
+
+        // シーン内のUIを自動取得（設定し忘れてもOK）
+        if (deathCountText == null)
+        {
+            GameObject textObj = GameObject.Find("DeathCountText");
+            if (textObj != null)
+                deathCountText = textObj.GetComponent<Text>();
+        }
+
+        UpdateDeathCountUI();
     }
 
     void Update()
     {
-        // 死亡中は操作不能にする
         if (isDead) return;
 
-        // 横移動
         float moveX = Input.GetAxis("Horizontal");
         rb.linearVelocity = new Vector2(moveX * moveSpeed, rb.linearVelocity.y);
 
-        // ジャンプ
         if (Input.GetButtonDown("Jump") && isGrounded)
         {
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
         }
 
-        // 落下補正（マリオ風）
         if (rb.linearVelocity.y < 0)
         {
             rb.linearVelocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1) * Time.deltaTime;
@@ -53,59 +68,54 @@ public class PlayerController : MonoBehaviour
             rb.linearVelocity += Vector2.up * Physics2D.gravity.y * (lowJumpMultiplier - 1) * Time.deltaTime;
         }
 
-        // 落下死
-        if (transform.position.y < fallLimit)
+        if (transform.position.y < fallLimit || transform.position.y > fallLimitup)
         {
             StartCoroutine(Gameover());
         }
-
-        if (transform.position.y > fallLimitup)
-        {
-            StartCoroutine(Gameover());
-        }
-
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Ground"))
-        {
             isGrounded = true;
-        }
 
-        // 敵に当たったら死ぬ
         if (collision.gameObject.CompareTag("Enemy"))
-        {
             StartCoroutine(Gameover());
-        }
     }
 
     private void OnCollisionExit2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Ground"))
-        {
             isGrounded = false;
-        }
     }
 
     IEnumerator Gameover()
     {
-        if (isDead) yield break; // ← 二重実行防止
+        if (isDead) yield break;
         isDead = true;
 
-        // ゴールUIを表示
+        // 死亡回数をカウント & 保存
+        deathCount++;
+        PlayerPrefs.SetInt("DeathCount", deathCount);
+        PlayerPrefs.Save();
+        UpdateDeathCountUI();
+
         if (GameOverUI != null)
             GameOverUI.SetActive(true);
 
-        Debug.Log("Game Over!");
+        Debug.Log("Game Over! Death Count: " + deathCount);
 
-        // 動きを止める
         rb.linearVelocity = Vector2.zero;
-        rb.bodyType = RigidbodyType2D.Kinematic; // ← 物理挙動も停止
+        rb.bodyType = RigidbodyType2D.Kinematic;
 
         yield return new WaitForSeconds(delayTime);
 
-        // シーンをリロード
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+    }
+
+    private void UpdateDeathCountUI()
+    {
+        if (deathCountText != null)
+            deathCountText.text = "Death: " + deathCount.ToString();
     }
 }
