@@ -1,15 +1,23 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+
 public class TitleEscape : MonoBehaviour
 {
-    [SerializeField] private string titleSceneName = "Title"; // タイトルシーン名を設定
+    [SerializeField] private string titleSceneName = "stageselect";
 
     void Update()
     {
-        // Escキーでタイトルへ戻る
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            SceneManager.LoadScene(titleSceneName);
+            // シーンが存在するか確認
+            if (Application.CanStreamedLevelBeLoaded(titleSceneName))
+            {
+                SceneManager.LoadScene(titleSceneName);
+            }
+            else
+            {
+                Debug.LogError($"シーン '{titleSceneName}' が Build Settings に登録されていません！");
+            }
         }
     }
 }
