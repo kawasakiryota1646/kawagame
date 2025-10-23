@@ -13,6 +13,11 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float fallMultiplier = 2.5f;
     [SerializeField] private float lowJumpMultiplier = 2f;
 
+    [Header("接地判定設定")]
+    [SerializeField] private Transform groundCheck;      // 足元の判定位置
+    [SerializeField] private float groundCheckRadius = 0.2f; // 接地判定の範囲
+    [SerializeField] private LayerMask groundLayer;      // 地面のレイヤー
+
     [Header("ゲームオーバー設定")]
     public float fallLimit = -10f;
     public float fallLimitup = 8f;
@@ -20,23 +25,19 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private GameObject GameOverUI;
     [SerializeField] private float delayTime = 3f;
 
-    [Header("UI設定（任意）")]
-    [SerializeField] private Text deathCountText; // 死亡回数を表示するText
+    [Header("UI設定")]
+    [SerializeField] private Text deathCountText;
 
     private Rigidbody2D rb;
     private bool isGrounded = false;
     private bool isDead = false;
-
-    private int deathCount; // 死亡回数
+    private int deathCount;
 
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-
-        // 保存されている死亡回数を読み込む
         deathCount = PlayerPrefs.GetInt("DeathCount", 0);
 
-        // シーン内のUIを自動取得（設定し忘れてもOK）
         if (deathCountText == null)
         {
             GameObject textObj = GameObject.Find("DeathCountText");
@@ -51,6 +52,9 @@ public class PlayerController : MonoBehaviour
     {
         if (isDead) return;
 
+        // GroundCheck + Tag両方で接地判定を更新
+        isGrounded = CheckGrounded();
+
         float moveX = Input.GetAxis("Horizontal");
         rb.linearVelocity = new Vector2(moveX * moveSpeed, rb.linearVelocity.y);
 
@@ -59,34 +63,36 @@ public class PlayerController : MonoBehaviour
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
         }
 
+        // 落下補正（マリオ風）
         if (rb.linearVelocity.y < 0)
-        {
             rb.linearVelocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1) * Time.deltaTime;
-        }
         else if (rb.linearVelocity.y > 0 && !Input.GetButton("Jump"))
-        {
             rb.linearVelocity += Vector2.up * Physics2D.gravity.y * (lowJumpMultiplier - 1) * Time.deltaTime;
-        }
 
         if (transform.position.y < fallLimit || transform.position.y > fallLimitup)
-        {
             StartCoroutine(Gameover());
+    }
+
+    bool CheckGrounded()
+    {
+        // ① OverlapCircleでレイヤーを判定
+        bool hit = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
+
+        // ② 念のためタグ「Ground」にも反応（柔軟対応）
+        if (!hit)
+        {
+            Collider2D col = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius);
+            if (col != null && col.CompareTag("Ground"))
+                hit = true;
         }
+
+        return hit;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.gameObject.CompareTag("Ground"))
-            isGrounded = true;
-
         if (collision.gameObject.CompareTag("Enemy"))
             StartCoroutine(Gameover());
-    }
-
-    private void OnCollisionExit2D(Collision2D collision)
-    {
-        if (collision.gameObject.CompareTag("Ground"))
-            isGrounded = false;
     }
 
     IEnumerator Gameover()
@@ -94,7 +100,6 @@ public class PlayerController : MonoBehaviour
         if (isDead) yield break;
         isDead = true;
 
-        // 死亡回数をカウント & 保存
         deathCount++;
         PlayerPrefs.SetInt("DeathCount", deathCount);
         PlayerPrefs.Save();
@@ -103,19 +108,26 @@ public class PlayerController : MonoBehaviour
         if (GameOverUI != null)
             GameOverUI.SetActive(true);
 
-        Debug.Log("Game Over! Death Count: " + deathCount);
-
         rb.linearVelocity = Vector2.zero;
         rb.bodyType = RigidbodyType2D.Kinematic;
 
         yield return new WaitForSeconds(delayTime);
-
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
     }
 
     private void UpdateDeathCountUI()
     {
         if (deathCountText != null)
-            deathCountText.text = "Death: " + deathCount.ToString();
+            deathCountText.text = "Death: " + deathCount;
+    }
+
+    void OnDrawGizmosSelected()
+    {
+        // GroundCheckの範囲をScene上で見えるように
+        if (groundCheck != null)
+        {
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireSphere(groundCheck.position, groundCheckRadius);
+        }
     }
 }

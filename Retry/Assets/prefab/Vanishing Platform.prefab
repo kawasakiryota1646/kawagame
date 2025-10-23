@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2928845620607355029}
   - component: {fileID: 3469445555268418817}
   - component: {fileID: 4845676909736981419}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Vanishing Platform
   m_TagString: Ground
   m_Icon: {fileID: 0}

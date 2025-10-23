@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3617156072895050374}
   - component: {fileID: 1124260031480103219}
   - component: {fileID: 7232097046018282941}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: HiddenBlock
   m_TagString: Untagged
   m_Icon: {fileID: 0}

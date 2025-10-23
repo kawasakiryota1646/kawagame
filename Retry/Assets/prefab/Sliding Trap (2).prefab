@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 953151954114709198}
   - component: {fileID: 8487032624840788966}
   - component: {fileID: 2276897471025939300}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Sliding Trap (2)
   m_TagString: Ground
   m_Icon: {fileID: 0}

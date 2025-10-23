@@ -4,11 +4,15 @@ using System.Collections;
 public class SlidingFloorTrap : MonoBehaviour
 {
     [Header("設定項目")]
-    [SerializeField] private float slideDistance = 3f;    // どれだけ左に動くか
-    [SerializeField] private float slideSpeed = 2f;       // どれくらいの速さで動くか
-    [SerializeField] private float delayBeforeSlide = 0.5f; // 乗ってから動くまでの時間
-    [SerializeField] private float resetDelay = 3f;       // 元に戻るまでの時間
-    [SerializeField] private bool resetAfterSlide = true; // 戻すかどうか
+    [SerializeField] private float slideDistance = 3f;      // 左方向に動く距離
+    [SerializeField] private float slideSpeed = 2f;         // 動く速さ
+    [SerializeField] private float delayBeforeSlide = 0.5f; // 動くまでの遅延
+    [SerializeField] private float resetDelay = 3f;         // 元に戻るまでの時間
+    [SerializeField] private bool resetAfterSlide = true;   // 戻すかどうか
+
+    [Header("検知範囲設定")]
+    [SerializeField] private float triggerRange = 3f;       // プレイヤーを検知する距離
+    [SerializeField] private LayerMask playerLayer;         // Playerレイヤーを指定（Inspectorで）
 
     private bool isSliding = false;
     private Vector3 startPosition;
@@ -20,9 +24,13 @@ public class SlidingFloorTrap : MonoBehaviour
         targetPosition = startPosition + Vector3.left * slideDistance;
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    void Update()
     {
-        if (!isSliding && collision.gameObject.CompareTag("Player"))
+        if (isSliding) return;
+
+        // プレイヤー検知
+        Collider2D hit = Physics2D.OverlapCircle(transform.position, triggerRange, playerLayer);
+        if (hit != null)
         {
             StartCoroutine(SlideTrap());
         }
@@ -33,6 +41,7 @@ public class SlidingFloorTrap : MonoBehaviour
         isSliding = true;
         yield return new WaitForSeconds(delayBeforeSlide);
 
+        // 左へスライド
         float t = 0f;
         while (t < 1f)
         {
@@ -56,5 +65,12 @@ public class SlidingFloorTrap : MonoBehaviour
         }
 
         isSliding = false;
+    }
+
+    // Scene上で検知範囲を可視化（確認用）
+    private void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(transform.position, triggerRange);
     }
 }
