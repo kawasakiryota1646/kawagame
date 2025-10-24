@@ -53,30 +53,5 @@ public class walltrap : MonoBehaviour
         }
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        // プレイヤーを押し潰したらGameOver
-        if (collision.gameObject.CompareTag("Player"))
-        {
-            StartCoroutine(CrushPlayer(collision.gameObject));
-        }
-    }
 
-    IEnumerator CrushPlayer(GameObject player)
-    {
-
-        // プレイヤーを非表示に
-        player.SetActive(false);
-
-        // GameOver UI表示
-        if (gameOverUI)
-            gameOverUI.SetActive(true);
-
-        yield return new WaitForSeconds(delayBeforeRestart);
-
-        // シーンリロード
-        UnityEngine.SceneManagement.SceneManager.LoadScene(
-            UnityEngine.SceneManagement.SceneManager.GetActiveScene().name
-        );
-    }
 }

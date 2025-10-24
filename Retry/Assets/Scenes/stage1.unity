@@ -441,6 +441,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   titleSceneName: stageselect
+  retryUI: {fileID: 717891714}
+  nextSceneName: stage1
+  delayTime: 3
 --- !u!114 &142235284
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3013,7 +3016,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
   m_ReferenceResolution: {x: 800, y: 600}
@@ -3033,7 +3036,7 @@ Canvas:
   m_GameObject: {fileID: 1313667771}
   m_Enabled: 1
   serializedVersion: 3
-  m_RenderMode: 1
+  m_RenderMode: 0
   m_Camera: {fileID: 150824213}
   m_PlaneDistance: 100
   m_PixelPerfect: 0
@@ -3888,7 +3891,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 301, y: 202}
+  m_AnchoredPosition: {x: 333, y: 179}
   m_SizeDelta: {x: 254.83, y: 69.61}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1619489422
@@ -5183,7 +5186,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3393055334753300399, guid: e0029478796c763449d4b868c4b0eca1, type: 3}
       propertyPath: delayTime
-      value: 0.2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3393055334753300399, guid: e0029478796c763449d4b868c4b0eca1, type: 3}
       propertyPath: jumpForce

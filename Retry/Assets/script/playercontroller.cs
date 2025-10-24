@@ -14,9 +14,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float lowJumpMultiplier = 2f;
 
     [Header("接地判定設定")]
-    [SerializeField] private Transform groundCheck;      // 足元の判定位置
-    [SerializeField] private float groundCheckRadius = 0.2f; // 接地判定の範囲
-    [SerializeField] private LayerMask groundLayer;      // 地面のレイヤー
+    [SerializeField] private Transform groundCheck;
+    [SerializeField] private float groundCheckRadius = 0.2f;
+    [SerializeField] private LayerMask groundLayer;
 
     [Header("ゲームオーバー設定")]
     public float fallLimit = -10f;
@@ -28,6 +28,10 @@ public class PlayerController : MonoBehaviour
     [Header("UI設定")]
     [SerializeField] private Text deathCountText;
 
+    [Header("サウンド設定🎵")]
+    [SerializeField] private AudioClip deathSound;  // ← 死亡効果音
+    private AudioSource audioSource;                // ← 再生用
+
     private Rigidbody2D rb;
     private bool isGrounded = false;
     private bool isDead = false;
@@ -36,15 +40,15 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        deathCount = PlayerPrefs.GetInt("DeathCount", 0);
+        audioSource = GetComponent<AudioSource>(); // ← AudioSource取得！
 
+        deathCount = PlayerPrefs.GetInt("DeathCount", 0);
         if (deathCountText == null)
         {
             GameObject textObj = GameObject.Find("DeathCountText");
             if (textObj != null)
                 deathCountText = textObj.GetComponent<Text>();
         }
-
         UpdateDeathCountUI();
     }
 
@@ -52,9 +56,7 @@ public class PlayerController : MonoBehaviour
     {
         if (isDead) return;
 
-        // GroundCheck + Tag両方で接地判定を更新
         isGrounded = CheckGrounded();
-
         float moveX = Input.GetAxis("Horizontal");
         rb.linearVelocity = new Vector2(moveX * moveSpeed, rb.linearVelocity.y);
 
@@ -63,7 +65,6 @@ public class PlayerController : MonoBehaviour
             rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpForce);
         }
 
-        // 落下補正（マリオ風）
         if (rb.linearVelocity.y < 0)
             rb.linearVelocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1) * Time.deltaTime;
         else if (rb.linearVelocity.y > 0 && !Input.GetButton("Jump"))
@@ -75,17 +76,13 @@ public class PlayerController : MonoBehaviour
 
     bool CheckGrounded()
     {
-        // ① OverlapCircleでレイヤーを判定
         bool hit = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius, groundLayer);
-
-        // ② 念のためタグ「Ground」にも反応（柔軟対応）
         if (!hit)
         {
             Collider2D col = Physics2D.OverlapCircle(groundCheck.position, groundCheckRadius);
             if (col != null && col.CompareTag("Ground"))
                 hit = true;
         }
-
         return hit;
     }
 
@@ -99,6 +96,21 @@ public class PlayerController : MonoBehaviour
     {
         if (isDead) yield break;
         isDead = true;
+
+        // 🎵 効果音を鳴らす
+        if (audioSource != null && deathSound != null)
+        {
+            audioSource.PlayOneShot(deathSound);
+        }
+        else
+        {
+            Debug.LogWarning("死亡音が設定されていません！");
+        }
+
+        // 🎧 カメラのBGMを止める
+        AudioSource cameraAudio = Camera.main.GetComponent<AudioSource>();
+        if (cameraAudio != null)
+            cameraAudio.Stop();
 
         deathCount++;
         PlayerPrefs.SetInt("DeathCount", deathCount);
@@ -123,7 +135,6 @@ public class PlayerController : MonoBehaviour
 
     void OnDrawGizmosSelected()
     {
-        // GroundCheckの範囲をScene上で見えるように
         if (groundCheck != null)
         {
             Gizmos.color = Color.yellow;
