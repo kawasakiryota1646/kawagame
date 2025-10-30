@@ -1,3 +1,4 @@
+
 using UnityEngine;
 using System.Collections;
 
@@ -6,7 +7,8 @@ public class Spike : MonoBehaviour
     [SerializeField] private float extendHeight = 1f;
     [SerializeField] private float extendSpeed = 3f;
     [SerializeField] private float retractDelay = 2f;
-    [SerializeField] private float triggerRange = 3f;
+    [SerializeField] private float triggerRangeX = 3f; // 横方向の範囲
+    [SerializeField] private float triggerRangeY = 2f; // 縦方向の範囲
 
     private Vector3 startPos;
     private Vector3 extendedPos;
@@ -26,9 +28,12 @@ public class Spike : MonoBehaviour
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         if (!player) return;
 
-        float distance = Vector2.Distance(transform.position, player.transform.position);
+        Vector3 playerPos = player.transform.position;
+        float dx = Mathf.Abs(playerPos.x - transform.position.x);
+        float dy = Mathf.Abs(playerPos.y - transform.position.y);
 
-        if (!isExtended && distance < triggerRange)
+        // 縦横の範囲で判定
+        if (!isExtended && dx < triggerRangeX && dy < triggerRangeY)
         {
             StartCoroutine(Extend());
         }
@@ -39,7 +44,6 @@ public class Spike : MonoBehaviour
         isExtended = true;
         if (spikeCollider) spikeCollider.enabled = true;
 
-        // 出るアニメーション
         float t = 0f;
         while (t < 1f)
         {
@@ -48,10 +52,8 @@ public class Spike : MonoBehaviour
             yield return null;
         }
 
-        // 一定時間経ったら戻る
         yield return new WaitForSeconds(retractDelay);
 
-        // 引っ込む
         t = 0f;
         while (t < 1f)
         {

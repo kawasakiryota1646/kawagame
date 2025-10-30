@@ -139,6 +139,14 @@ PrefabInstance:
       propertyPath: triggerRange
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 2227386136070634474, guid: 4f2d19207ee3d0f49a60133bfe7f3feb, type: 3}
+      propertyPath: triggerRangeX
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2227386136070634474, guid: 4f2d19207ee3d0f49a60133bfe7f3feb, type: 3}
+      propertyPath: triggerRangeY
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 6169722793380300924, guid: 4f2d19207ee3d0f49a60133bfe7f3feb, type: 3}
       propertyPath: m_LocalPosition.x
       value: 59.01
@@ -1299,6 +1307,10 @@ PrefabInstance:
       propertyPath: triggerRange
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 2227386136070634474, guid: 4f2d19207ee3d0f49a60133bfe7f3feb, type: 3}
+      propertyPath: triggerRangeX
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6169722793380300924, guid: 4f2d19207ee3d0f49a60133bfe7f3feb, type: 3}
       propertyPath: m_LocalPosition.x
       value: 61.68
@@ -1879,7 +1891,8 @@ MonoBehaviour:
   extendHeight: 1
   extendSpeed: 5
   retractDelay: 2
-  triggerRange: 3
+  triggerRangeX: 3
+  triggerRangeY: 2
 --- !u!212 &611950712
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -2477,6 +2490,14 @@ PrefabInstance:
     - target: {fileID: 2227386136070634474, guid: 4f2d19207ee3d0f49a60133bfe7f3feb, type: 3}
       propertyPath: triggerRange
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2227386136070634474, guid: 4f2d19207ee3d0f49a60133bfe7f3feb, type: 3}
+      propertyPath: triggerRangeX
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2227386136070634474, guid: 4f2d19207ee3d0f49a60133bfe7f3feb, type: 3}
+      propertyPath: triggerRangeY
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 6169722793380300924, guid: 4f2d19207ee3d0f49a60133bfe7f3feb, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3158,7 +3179,8 @@ MonoBehaviour:
   extendHeight: 1
   extendSpeed: 3
   retractDelay: 2
-  triggerRange: 3
+  triggerRangeX: 3
+  triggerRangeY: 2
 --- !u!212 &1339900449
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -3667,6 +3689,14 @@ PrefabInstance:
     - target: {fileID: 2227386136070634474, guid: 4f2d19207ee3d0f49a60133bfe7f3feb, type: 3}
       propertyPath: triggerRange
       value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 2227386136070634474, guid: 4f2d19207ee3d0f49a60133bfe7f3feb, type: 3}
+      propertyPath: triggerRangeX
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2227386136070634474, guid: 4f2d19207ee3d0f49a60133bfe7f3feb, type: 3}
+      propertyPath: triggerRangeY
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 6169722793380300924, guid: 4f2d19207ee3d0f49a60133bfe7f3feb, type: 3}
       propertyPath: m_LocalPosition.x
@@ -4496,7 +4526,8 @@ MonoBehaviour:
   extendHeight: 1
   extendSpeed: 5
   retractDelay: 2
-  triggerRange: 3
+  triggerRangeX: 3
+  triggerRangeY: 2
 --- !u!212 &1902442135
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -4880,6 +4911,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 2276897471025939300, guid: 306bd3adad2bacb4e948e6bcd179e57b, type: 3}
+      propertyPath: playerLayer.m_Bits
+      value: 128
+      objectReference: {fileID: 0}
     - target: {fileID: 5046643002621315579, guid: 306bd3adad2bacb4e948e6bcd179e57b, type: 3}
       propertyPath: m_LocalPosition.x
       value: 38.48
@@ -5230,7 +5265,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7911744030274964455, guid: e0029478796c763449d4b868c4b0eca1, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -6.8
+      value: -6.67
       objectReference: {fileID: 0}
     - target: {fileID: 7911744030274964455, guid: e0029478796c763449d4b868c4b0eca1, type: 3}
       propertyPath: m_LocalPosition.y
