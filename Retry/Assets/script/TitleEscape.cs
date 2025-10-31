@@ -1,19 +1,19 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.SceneManagement;
 using System.Collections;
 
 public class TitleEscape : MonoBehaviour
 {
     [SerializeField] private string titleSceneName = "stageselect";
-    [SerializeField] private GameObject retryUI;   // ƒŠƒgƒ‰ƒCUI
-    [SerializeField] private string nextSceneName = "NextScene"; // Ÿ‚ÌƒV[ƒ“–¼
-    [SerializeField] private float delayTime = 3f; // ƒV[ƒ“ˆÚs‚Ü‚Å‚Ì‘Ò‹@ŠÔ
+    [SerializeField] private GameObject retryUI;   // ãƒªãƒˆãƒ©ã‚¤UI
+    [SerializeField] private string nextSceneName = "NextScene"; // æ¬¡ã®ã‚·ãƒ¼ãƒ³å
+    [SerializeField] private float delayTime = 3f; // ã‚·ãƒ¼ãƒ³ç§»è¡Œã¾ã§ã®å¾…æ©Ÿæ™‚é–“
 
-    private bool isRetrying = false; // ˜A‘Å–h~—p
+    private bool isRetrying = false; // é€£æ‰“é˜²æ­¢ç”¨
 
     void Update()
     {
-        // ESC‚Åƒ^ƒCƒgƒ‹‚Ö–ß‚é
+        // ESCã§ã‚¿ã‚¤ãƒˆãƒ«ã¸æˆ»ã‚‹
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             if (Application.CanStreamedLevelBeLoaded(titleSceneName))
@@ -22,11 +22,11 @@ public class TitleEscape : MonoBehaviour
             }
             else
             {
-                Debug.LogError($"ƒV[ƒ“ '{titleSceneName}' ‚ª Build Settings ‚É“o˜^‚³‚ê‚Ä‚¢‚Ü‚¹‚ñI");
+                Debug.LogError($"ã‚·ãƒ¼ãƒ³ '{titleSceneName}' ãŒ Build Settings ã«ç™»éŒ²ã•ã‚Œã¦ã„ã¾ã›ã‚“ï¼");
             }
         }
 
-        // RƒL[‚ÅƒŠƒgƒ‰ƒCŠJn
+        // Backspaceã‚­ãƒ¼ã§ãƒªãƒˆãƒ©ã‚¤é–‹å§‹
         if (Input.GetKeyDown(KeyCode.Backspace) && !isRetrying)
         {
             StartCoroutine(RetrySequence());
@@ -37,18 +37,24 @@ public class TitleEscape : MonoBehaviour
     {
         isRetrying = true;
 
-        // UI‚ğ•\¦
+        // ğŸ’¾ ãƒªãƒˆãƒ©ã‚¤å›æ•°ã‚«ã‚¦ãƒ³ãƒˆ
+        int retryCount = PlayerPrefs.GetInt("RetryCount", 0);
+        retryCount++;
+        PlayerPrefs.SetInt("RetryCount", retryCount);
+        PlayerPrefs.Save();
+
+        Debug.Log($"Retry Triggered! Retry Count: {retryCount}");
+
+        // UIã‚’è¡¨ç¤º
         if (retryUI != null)
         {
             retryUI.SetActive(true);
         }
 
-        Debug.Log("Retry Triggered");
-
-        // w’èŠÔ‘Ò‹@
+        // æŒ‡å®šæ™‚é–“å¾…æ©Ÿ
         yield return new WaitForSeconds(delayTime);
 
-        // Ÿ‚ÌƒV[ƒ“‚ÉˆÚsi¡‚ÌƒV[ƒ“‚ğƒŠƒ[ƒh‚µ‚½‚¢ê‡‚ÍƒRƒƒ“ƒg‚ğØ‚è‘Ö‚¦‚Ä‚Ëj
+        // ğŸ” ã‚·ãƒ¼ãƒ³ã‚’ãƒªãƒ­ãƒ¼ãƒ‰ï¼ˆã¾ãŸã¯æŒ‡å®šã®ã‚·ãƒ¼ãƒ³ã¸ï¼‰
         SceneManager.LoadScene(nextSceneName);
         // SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 

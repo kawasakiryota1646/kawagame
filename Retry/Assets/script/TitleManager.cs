@@ -1,43 +1,51 @@
-using UnityEngine;
+ï»¿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class TitleManager : MonoBehaviour
 {
-    [Header("UIQÆ")]
+    [Header("UIå‚ç…§")]
     [SerializeField] private Text deathCountText;
+    [SerializeField] private Text retryCountText;
     [SerializeField] private Button startButton;
     [SerializeField] private Button resetButton;
 
-    [Header("İ’è")]
-    [SerializeField] private string gameSceneName = "GameScene"; // ƒQ[ƒ€–{•Ò‚ÌƒV[ƒ“–¼
+    [Header("è¨­å®š")]
+    [SerializeField] private string gameSceneName = "GameScene"; // ã‚²ãƒ¼ãƒ æœ¬ç·¨ã®ã‚·ãƒ¼ãƒ³å
 
     void Start()
     {
-        // UIQÆ‚ªİ’è‚³‚ê‚Ä‚¢‚È‚¯‚ê‚Î©“®æ“¾
+        // UIå‚ç…§ãŒè¨­å®šã•ã‚Œã¦ã„ãªã‘ã‚Œã°è‡ªå‹•å–å¾—
         if (deathCountText == null)
             deathCountText = GameObject.Find("DeathCountText")?.GetComponent<Text>();
+        if (retryCountText == null)
+            retryCountText = GameObject.Find("RetryCountText")?.GetComponent<Text>();
         if (startButton == null)
             startButton = GameObject.Find("StartButton")?.GetComponent<Button>();
         if (resetButton == null)
             resetButton = GameObject.Find("ResetButton")?.GetComponent<Button>();
 
-        // ƒ{ƒ^ƒ“İ’è
+        // ãƒœã‚¿ãƒ³è¨­å®š
         if (startButton != null)
             startButton.onClick.AddListener(OnStartButton);
 
         if (resetButton != null)
             resetButton.onClick.AddListener(OnResetButton);
 
-        // ‰Šú•\¦
-        UpdateDeathCountUI();
+        // åˆæœŸè¡¨ç¤º
+        UpdateCountUI();
     }
 
-    void UpdateDeathCountUI()
+    void UpdateCountUI()
     {
-        int count = PlayerPrefs.GetInt("DeathCount", 0);
+        int deathCount = PlayerPrefs.GetInt("DeathCount", 0);
+        int retryCount = PlayerPrefs.GetInt("RetryCount", 0);
+
         if (deathCountText != null)
-            deathCountText.text = "Death Count: " + count;
+            deathCountText.text = "Death Count: " + deathCount;
+
+        if (retryCountText != null)
+            retryCountText.text = "Retry Count: " + retryCount;
     }
 
     void OnStartButton()
@@ -47,9 +55,12 @@ public class TitleManager : MonoBehaviour
 
     void OnResetButton()
     {
+        // ğŸ” ã©ã¡ã‚‰ã‚‚ãƒªã‚»ãƒƒãƒˆï¼
         PlayerPrefs.DeleteKey("DeathCount");
+        PlayerPrefs.DeleteKey("RetryCount");
         PlayerPrefs.Save();
-        UpdateDeathCountUI();
-        Debug.Log("Death count reset!");
+
+        UpdateCountUI();
+        Debug.Log("DeathCount & RetryCount reset!");
     }
 }

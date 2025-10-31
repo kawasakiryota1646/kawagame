@@ -1,18 +1,47 @@
+ï»¿using System.Collections;
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
-using System.Collections;
+using UnityEngine.UI;
 
 public class Retry : MonoBehaviour
 {
-    [SerializeField] private GameObject retryUI;   // ƒŠƒgƒ‰ƒCUI
-    [SerializeField] private string nextSceneName = "NextScene"; // Ÿ‚ÌƒV[ƒ“–¼
-    [SerializeField] private float delayTime = 3f; // ƒV[ƒ“ˆÚs‚Ü‚Å‚Ì‘Ò‹@ŠÔ
+    [Header("UIè¨­å®š")]
+    [SerializeField] private GameObject retryUI;     // ãƒªãƒˆãƒ©ã‚¤UI
+    [SerializeField] private Text retryCountText;    // ãƒªãƒˆãƒ©ã‚¤å›æ•°è¡¨ç¤ºç”¨
+    [SerializeField] private string nextSceneName = "NextScene";
+    [SerializeField] private float delayTime = 3f;
+    [SerializeField] private AudioClip RetryBGM; // ã‚´ãƒ¼ãƒ«æ™‚ã«æµã™BGM
+    private AudioSource audioSource;
 
     private bool isTriggered = false;
+    private int retryCount;
+
+    void Start()
+    {
+        // AudioSourceã‚’è¿½åŠ 
+        audioSource = gameObject.AddComponent<AudioSource>();
+        audioSource.clip = RetryBGM;
+        audioSource.loop = false;
+
+
+        // ä¿å­˜æ¸ˆã¿ã®ãƒªãƒˆãƒ©ã‚¤å›æ•°ã‚’å–å¾—
+        retryCount = PlayerPrefs.GetInt("RetryCount", 0);
+
+        // ã‚·ãƒ¼ãƒ³å†…ã«ãƒ†ã‚­ã‚¹ãƒˆãŒã‚ã‚‹ãªã‚‰è‡ªå‹•å–å¾—
+        if (retryCountText == null)
+        {
+            GameObject textObj = GameObject.Find("RetryCountText");
+            if (textObj != null)
+                retryCountText = textObj.GetComponent<Text>();
+        }
+
+        UpdateRetryUI();
+    }
 
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (isTriggered) return; // “ñd”½‰–h~
+        if (isTriggered) return; // äºŒé‡åå¿œé˜²æ­¢
 
         if (other.CompareTag("Player"))
         {
@@ -23,7 +52,7 @@ public class Retry : MonoBehaviour
 
     IEnumerator RetrySequence(GameObject player)
     {
-        // ƒvƒŒƒCƒ„[‘€ì‚ğ’â~
+        // ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼æ“ä½œã‚’åœæ­¢
         var controller = player.GetComponent<PlayerController>();
         if (controller != null)
             controller.enabled = false;
@@ -32,16 +61,32 @@ public class Retry : MonoBehaviour
         if (rb != null)
             rb.linearVelocity = Vector2.zero;
 
-        // UI‚ğ•\¦
+        // UIã‚’è¡¨ç¤º
         if (retryUI != null)
             retryUI.SetActive(true);
 
+        // ã‚´ãƒ¼ãƒ«BGMã‚’å†ç”Ÿ
+        if (RetryBGM != null)
+            audioSource.Play();
+
+
         Debug.Log("Retry Triggered");
 
-        // w’èŠÔ‘Ò‹@
-        yield return new WaitForSeconds(delayTime);
+        // ğŸ”¢ å›æ•°ã‚’ã‚«ã‚¦ãƒ³ãƒˆ & ä¿å­˜
+        retryCount++;
+        PlayerPrefs.SetInt("RetryCount", retryCount);
+        PlayerPrefs.Save();
 
-        // ƒV[ƒ“‚ğƒŠƒ[ƒh or ˆÚs
+        UpdateRetryUI();
+
+        // å¾…æ©Ÿã—ã¦ã‚·ãƒ¼ãƒ³ç§»å‹•
+        yield return new WaitForSeconds(delayTime);
         SceneManager.LoadScene(nextSceneName);
+    }
+
+    private void UpdateRetryUI()
+    {
+        if (retryCountText != null)
+            retryCountText.text = "Retry: " + retryCount;
     }
 }
