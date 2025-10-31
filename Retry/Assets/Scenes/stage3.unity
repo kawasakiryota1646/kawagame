@@ -3660,7 +3660,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c0bfa746f972d7c479a0858ed760d110, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  newBGM: {fileID: 8300000, guid: 3c4372cbc77e0b448ab65d336cf91b78, type: 3}
+  newBGM: {fileID: 8300000, guid: ab1d586a7769e74469cfd6466f5bb99d, type: 3}
   fadeOutSpeed: 1
   fadeInSpeed: 1
 --- !u!61 &1092679522
